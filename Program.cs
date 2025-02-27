@@ -22,8 +22,33 @@ class Programm
             {
                 var result = reader.AsDataSet();
 
-                DataTable table = result.Table
+                DataTable table = result.Tables[0];
+                using (var writer = new StreamWriter(csvFilePath))
+                {
+                    for (int i = 0; i < table.Columns.Count; i++)
+                    {
+                        writer.Write(table.Columns[i].ColumnName);
+                        if( i < table.Columns.Count -1 )
+                        {
+                            writer.Write(",");
+                        }
+                        writer.WriteLine();
+
+                    }
+
+                    foreach (DataRow row in table.Rows)
+                    {
+                        for (int  i = 0;  i < table.Columns.Count;  i++)
+                        {
+                            writer.Write(row[i].ToString());
+                            if (i < table.Columns.Count - 1) writer.WriteLine(",");
+                        }
+                        writer.WriteLine();
+                    }
+                }
+
             }
         }
+        Console.WriteLine("In CSV umgewandelt.");
     }
 }
