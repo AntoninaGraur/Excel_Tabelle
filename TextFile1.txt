@@ -42,10 +42,43 @@ class Program
                         writer.WriteLine();
                     }
                 }
+
+                FindCheapestAndMostExpensiveItem(table);
             }
         }
 
         Console.WriteLine("Excel-Datei wurde erfolgreich in CSV umgewandelt.");
     }
+
+    static void FindCheapestAndMostExpensiveItem(DataTable table)
+    {
+        string teuersterArtikel = "";
+        string billigsterArtikel = "";
+        double maxPreis = double.MinValue;
+        double minPreis = double.MaxValue;
+
+        foreach (DataRow row in table.Rows)
+        {
+            string artikel = row["Artikel"].ToString();
+            string preisText = row["Nettopreis"].ToString().Replace("€", "").Replace(".", "").Replace(",", ".").Trim();
+
+            if (double.TryParse(preisText, out double preis))
+            {
+                if (preis > maxPreis)
+                {
+                    maxPreis = preis;
+                    teuersterArtikel = artikel;
+                }
+
+                if (preis < minPreis)
+                {
+                    minPreis = preis;
+                    billigsterArtikel = artikel;
+                }
+            }
+        }
+
+        Console.WriteLine($"Teuerster Artikel: {teuersterArtikel}, Preis: {maxPreis}€");
+        Console.WriteLine($"Billigster Artikel: {billigsterArtikel}, Preis: {minPreis}€");
+    }
 }
-C:\Users\A.Graur\Documents\BKU\SWD
