@@ -48,3 +48,4 @@ class Program
         Console.WriteLine("Excel-Datei wurde erfolgreich in CSV umgewandelt.");
     }
 }
+C:\Users\A.Graur\Documents\BKU\SWD
