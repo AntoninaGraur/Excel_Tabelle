@@ -47,74 +47,65 @@ class Programm
                     }
                 }
                 //Datei auf dem Bildschirm ausgeben
-                Console.WriteLine("Inhalt der Excel-Datei: ");
+                Console.WriteLine("    Inhalt der Excel-Datei  ");
                 foreach (DataRow  row in table.Rows)
                 {
                     for (int i=0; i< table.Columns.Count; i++)
                     {
-                        Console.Write(row[i].ToString() + ";  ");
+                        Console.Write(row[i].ToString() +  ";  ");
                     }
                     Console.WriteLine("                     ");
-                } Console.WriteLine("In CSV umgewandelt.");
+                } Console.WriteLine("****************In CSV umgewandelt******************");
 
-                  FindenTeuerstenBilligstenArtikel(table);
+                
             }
            
         }
+        GetArtikel();
     }
 
-  static void FindenTeuerstenBilligstenArtikel(DataTable table)
+    static void GetArtikel()
     {
-        int artikelIndex = 8;
-        int priceIndex = 9;
+        Console.WriteLine("//******************Artikel + Nettopreis*********//");
 
-        // Spaltenindex für "Artikel" und "Nettopreis" finden
 
-        /*  for (int i =0; i< table.Columns.Count; i++)
-          {
-              if (table.Columns[i].ColumnName.Contains("Artikel")) artikelIndex = i;
-              if (table.Columns[i].ColumnName.Contains("Nettopris")) priceIndex = i;
-          }
+        string filePath = @"C:\Users\A.Graur\Documents\BKU\SWD\Bestellungen.xlsx";
 
-        */
-        foreach (DataRow row in table.Rows)
+        List<string> list = new List<string>();
+
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
         {
-            Console.WriteLine($" - {row.RowState}");
+            using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
+            {
+                int counter = 0;
+
+                while (reader.Read())
+                {
+                    counter++;
+
+                    if (counter > 1)
+                    {
+                        string artikel = reader.GetValue(8)?.ToString() ?? "Falls";
+                        string nettopreis = reader.GetValue(9)?.ToString() ?? "";
+
+                        string fullSTR = $"Artikel: {artikel} -- Nettotpreis: {nettopreis}";
+                        list.Add(fullSTR);
+                    }
+
+                }
+            }
         }
 
-        string teuerstenArtikel = "";
-        string billigstenArtikel = "";
-
-        double maxPrice = double.MinValue;
-        double minPrice = double.MaxValue;
-
-        /* foreach (DataRow row in table.Rows)
+        foreach (var item in list)
         {
-            string artikel = row[artikelIndex].ToString();
-            string priceText = row[priceIndex].ToString().Replace("€", "").Replace(".", "").Replace(",", ".").Trim();
+            Console.WriteLine(item);
+        }
 
-           // Console.WriteLine(artikel);
-          //  Console.WriteLine(priceText);
-           
-                        if (double.TryParse(priceText, out double price))
-                        {
-                            if (price>maxPrice)
-                            {
-                                maxPrice = price;
-                                teuerstenArtikel = artikel;
-                            }
+        List<string> nameList = new List<string>();
 
-                            if (price < minPrice)
-                            {
-                                minPrice = price;
-                                billigstenArtikel = artikel;
-                            }
-                        }
-                    }
-                    Console.WriteLine($"Teuerster Artikel : {teuerstenArtikel}, Kostet: {maxPrice}€ ");
-                    Console.WriteLine("///////////////////////////////////////////////////////////////");
-                    Console.WriteLine($"Teuerster Artikel : {billigstenArtikel}, Kostet: {minPrice}€ ");
-            */
-        
+
+        Console.ReadKey();
     }
 }
+

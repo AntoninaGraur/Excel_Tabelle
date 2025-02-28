@@ -1,119 +1,16 @@
-﻿using System;
-using System.Data;
-using System.IO;
-using ExcelDataReader;
+﻿1.	Aufgabe
+Wandeln Sie die Excel-Datei
+Bestellungen in eine CSV-Datei um.
 
-class Program
-{
-    static void Main(string[] args)
-    {
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-        string excelFilePath = "Pfad_zur_Excel_Datei.xlsx";
-        string csvFilePath = "Pfad_zur_Ausgabe_Datei.csv";
+2.	Aufgabe
+Finden Sie in Bestellungen den 
+teuersten und den billigsten Artikel 
+und geben Sie die Namen der beiden 
+Artikel auf dem Bildschirm aus.
 
-        using (var stream = File.Open(excelFilePath, FileMode.Open, FileAccess.Read))
-        {
-            using (var reader = ExcelReaderFactory.CreateReader(stream))
-            {
-                var result = reader.AsDataSet();
-                DataTable table = result.Tables[0];
+3.	Aufgabe
+Führen Sie die Suche nach 
+den beiden Artikeln in einem Unterprogramm durch.
 
-                using (var writer = new StreamWriter(csvFilePath))
-                {
-                    // Kopfzeile schreiben
-                    for (int i = 0; i < table.Columns.Count; i++)
-                    {
-                        writer.Write(table.Columns[i].ColumnName);
-                        if (i < table.Columns.Count - 1)
-                            writer.Write(",");
-                    }
-                    writer.WriteLine();
 
-                    // Daten schreiben
-                    foreach (DataRow row in table.Rows)
-                    {
-                        for (int i = 0; i < table.Columns.Count; i++)
-                        {
-                            writer.Write(row[i].ToString());
-                            if (i < table.Columns.Count - 1)
-                                writer.Write(",");
-                        }
-                        writer.WriteLine();
-                    }
-                }
-
-                // Inhalt der Datei auf dem Bildschirm ausgeben
-                Console.WriteLine("Inhalt der Excel-Datei:");
-                foreach (DataColumn column in table.Columns)
-                {
-                    Console.Write(column.ColumnName + "\t");
-                }
-                Console.WriteLine();
-
-                foreach (DataRow row in table.Rows)
-                {
-                    for (int i = 0; i < table.Columns.Count; i++)
-                    {
-                        Console.Write(row[i].ToString() + "\t");
-                    }
-                    Console.WriteLine();
-                }
-
-                FindCheapestAndMostExpensiveItem(table);
-            }
-        }
-
-        Console.WriteLine("Excel-Datei wurde erfolgreich in CSV umgewandelt.");
-    }
-
-    static void FindCheapestAndMostExpensiveItem(DataTable table)
-    {
-        int artikelIndex = -1;
-        int preisIndex = -1;
-
-        // Spaltenindex für "Artikel" und "Nettopreis" finden
-        for (int i = 0; i < table.Columns.Count; i++)
-        {
-            if (table.Columns[i].ColumnName.Contains("Artikel"))
-                artikelIndex = i;
-            if (table.Columns[i].ColumnName.Contains("Nettopreis"))
-                preisIndex = i;
-        }
-
-        if (artikelIndex == -1 || preisIndex == -1)
-        {
-            Console.WriteLine("Fehler: Spalten nicht gefunden!");
-            return;
-        }
-
-        string teuersterArtikel = "";
-        string billigsterArtikel = "";
-        double maxPreis = double.MinValue;
-        double minPreis = double.MaxValue;
-
-        foreach (DataRow row in table.Rows)
-        {
-            string artikel = row[artikelIndex].ToString();
-            string preisText = row[preisIndex].ToString().Replace("€", "").Replace(".", "").Replace(",", ".").Trim();
-
-            if (double.TryParse(preisText, out double preis))
-            {
-                if (preis > maxPreis)
-                {
-                    maxPreis = preis;
-                    teuersterArtikel = artikel;
-                }
-
-                if (preis < minPreis)
-                {
-                    minPreis = preis;
-                    billigsterArtikel = artikel;
-                }
-            }
-        }
-
-        Console.WriteLine($"Teuerster Artikel: {teuersterArtikel}, Preis: {maxPreis}€");
-        Console.WriteLine($"Billigster Artikel: {billigsterArtikel}, Preis: {minPreis}€");
-    }
-}
