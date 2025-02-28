@@ -51,13 +51,48 @@ class Programm
                 {
                     for (int i=0; i< table.Columns.Count; i++)
                     {
-                        Console.Write(row[i].ToString() + " ; ");
+                        Console.Write(row[i].ToString() + ";  ");
                     }
-                    Console.WriteLine(".........");
+                    Console.WriteLine("                     ");
                 } Console.WriteLine("In CSV umgewandelt.");
 
+                  FindenTeuerstenBilligstenArtikel(table);
+            }
+           
+        }
+    }
 
+  static void FindenTeuerstenBilligstenArtikel(DataTable table)
+    {
+        string teuerstenArtikel = "";
+        string billigstenArtikel = "";
+
+        double maxPrice = double.MinValue;
+        double minPrice = double.MaxValue;
+
+        foreach (DataRow row in table.Rows)
+        {
+            string artikel = row["Artikel"].ToString();
+            string priceText = row["Nettopreis"].ToString().Replace("€", "").Replace(".", "").Replace(",", ".").Trim();
+
+            if (double.TryParse(priceText, out double price))
+            {
+                if (price>maxPrice)
+                {
+                    maxPrice = price;
+                    teuerstenArtikel = artikel;
+                }
+
+                if (price < minPrice)
+                {
+                    minPrice = price;
+                    billigstenArtikel = artikel;
+                }
             }
         }
+        Console.WriteLine($"Teuerster Artikel : {teuerstenArtikel}, Kostet: {maxPrice}€ ");
+        Console.WriteLine("///////////////////////////////////////////////////////////////");
+        Console.WriteLine($"Teuerster Artikel : {billigstenArtikel}, Kostet: {minPrice}€ ");
+
     }
 }
