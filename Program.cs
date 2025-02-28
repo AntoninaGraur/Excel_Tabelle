@@ -2,6 +2,7 @@
 
 
 using System;
+using System.Collections.Immutable;
 using System.Data;
 using System.IO;
 using ExcelDataReader;
@@ -64,35 +65,56 @@ class Programm
 
   static void FindenTeuerstenBilligstenArtikel(DataTable table)
     {
+        int artikelIndex = 8;
+        int priceIndex = 9;
+
+        // Spaltenindex für "Artikel" und "Nettopreis" finden
+
+        /*  for (int i =0; i< table.Columns.Count; i++)
+          {
+              if (table.Columns[i].ColumnName.Contains("Artikel")) artikelIndex = i;
+              if (table.Columns[i].ColumnName.Contains("Nettopris")) priceIndex = i;
+          }
+
+        */
+        foreach (DataRow row in table.Rows)
+        {
+            Console.WriteLine($" - {row.RowState}");
+        }
+
         string teuerstenArtikel = "";
         string billigstenArtikel = "";
 
         double maxPrice = double.MinValue;
         double minPrice = double.MaxValue;
 
-        foreach (DataRow row in table.Rows)
+        /* foreach (DataRow row in table.Rows)
         {
-            string artikel = row["Artikel"].ToString();
-            string priceText = row["Nettopreis"].ToString().Replace("€", "").Replace(".", "").Replace(",", ".").Trim();
+            string artikel = row[artikelIndex].ToString();
+            string priceText = row[priceIndex].ToString().Replace("€", "").Replace(".", "").Replace(",", ".").Trim();
 
-            if (double.TryParse(priceText, out double price))
-            {
-                if (price>maxPrice)
-                {
-                    maxPrice = price;
-                    teuerstenArtikel = artikel;
-                }
+           // Console.WriteLine(artikel);
+          //  Console.WriteLine(priceText);
+           
+                        if (double.TryParse(priceText, out double price))
+                        {
+                            if (price>maxPrice)
+                            {
+                                maxPrice = price;
+                                teuerstenArtikel = artikel;
+                            }
 
-                if (price < minPrice)
-                {
-                    minPrice = price;
-                    billigstenArtikel = artikel;
-                }
-            }
-        }
-        Console.WriteLine($"Teuerster Artikel : {teuerstenArtikel}, Kostet: {maxPrice}€ ");
-        Console.WriteLine("///////////////////////////////////////////////////////////////");
-        Console.WriteLine($"Teuerster Artikel : {billigstenArtikel}, Kostet: {minPrice}€ ");
-
+                            if (price < minPrice)
+                            {
+                                minPrice = price;
+                                billigstenArtikel = artikel;
+                            }
+                        }
+                    }
+                    Console.WriteLine($"Teuerster Artikel : {teuerstenArtikel}, Kostet: {maxPrice}€ ");
+                    Console.WriteLine("///////////////////////////////////////////////////////////////");
+                    Console.WriteLine($"Teuerster Artikel : {billigstenArtikel}, Kostet: {minPrice}€ ");
+            */
+        
     }
 }
