@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using ExcelDataReader;
 
@@ -61,7 +62,8 @@ class Programm
             }
            
         }
-        GetArtikel();
+       GetArtikel();
+        FindenTeuersterBilligsterArtikel();
     }
 
     static void GetArtikel()
@@ -103,9 +105,69 @@ class Programm
         }
 
         List<string> nameList = new List<string>();
+        using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+        {
+
+        }
+
+
+           
+    }
+
+    static void FindenTeuersterBilligsterArtikel()
+    {
+        Console.WriteLine("                                                                ");
+
+        Console.WriteLine("\n //******************Conwertierte Liste Teuerste Artikel + Billigste Artikel + Preis*********//");
+        Console.WriteLine("                                                                ");
+        string filePath = @"C:\Users\A.Graur\Documents\BKU\SWD\Bestellungen.xlsx";
+
+
+        List < (string Artikel, double Preis) > artiklListe = new List<(string, double)>();
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+        using(FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+        {
+            using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
+            {
+                int counter1 = 0;
+
+                while (reader.Read())
+                {
+                    counter1++;
+
+                    if (counter1 > 1)
+                    {
+                        string artikel1 = reader.GetValue(8)?.ToString() ?? "Unbekannt";
+                        string preisStr1 = reader.GetValue(9)?.ToString()?.Replace("€", "").Replace(".", "").Replace(",", ".") ?? ""; 
+
+                        if(double.TryParse(preisStr1, NumberStyles.Any, CultureInfo.InvariantCulture, out double preis))
+                        {
+                            artiklListe.Add((artikel1, preis));
+                        }
+
+                        string fullStr = $"Artikel: {artikel1} // Nettopreis: {preisStr1}";
+                       Console.WriteLine(fullStr);
+                       
+
+                    }
+                }
+            }
+        }
+        double maxPreis = artiklListe.Max(a => a.Preis);
+        double minPreis = artiklListe.Min(a => a.Preis);
+
+        var teuersterArtikel = artiklListe.First(a => a.Preis == maxPreis);
+        var billigsterArtikel = artiklListe.First(a => a.Preis == minPreis);
+
+        Console.WriteLine($"\nBilligster Artikel: {billigsterArtikel.Artikel}, Preis: {billigsterArtikel.Preis} €");
+        Console.WriteLine($"Teuerster Artikel: {teuersterArtikel.Artikel}, Preis: {teuersterArtikel.Preis} €");
 
 
         Console.ReadKey();
+    } 
+    
+
     }
-}
+
 
