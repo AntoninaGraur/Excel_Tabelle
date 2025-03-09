@@ -6,14 +6,18 @@ using System.Collections.Immutable;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using ExcelDataReader;
 
 
 class Programm
 {
-    static void Main(string[] args)
+    static void Main()
     {
         System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.Out.WriteLine("€");
 
         string excelFilePath = "C:/Users/A.Graur/Documents/BKU/SWD/Bestellungen.xlsx";
         string csvFilePath = "C:/Users/A.Graur/Documents/BKU/SWD/BestellungenCSV.csv"; 
@@ -55,7 +59,7 @@ class Programm
                     {
                         Console.Write(row[i].ToString() +  ";  ");
                     }
-                    Console.WriteLine("                     ");
+                    Console.WriteLine("\n");
                 } Console.WriteLine("****************In CSV umgewandelt******************");
 
                 
@@ -91,7 +95,7 @@ class Programm
                         string artikel = reader.GetValue(8)?.ToString() ?? "Falls";
                         string nettopreis = reader.GetValue(9)?.ToString() ?? "";
 
-                        string fullSTR = $"Artikel: {artikel} -- Nettotpreis: {nettopreis}";
+                        string fullSTR = $"Artikel: {artikel} -- Nettotpreis: {nettopreis} €";
                         list.Add(fullSTR);
                     }
 
@@ -116,7 +120,7 @@ class Programm
 
     static void FindenTeuersterBilligsterArtikel()
     {
-        Console.WriteLine("                                                                ");
+        Console.WriteLine(" \n");
 
         Console.WriteLine("\n //******************Conwertierte Liste Teuerste Artikel + Billigste Artikel + Preis*********//");
         Console.WriteLine("                                                                ");
@@ -146,8 +150,8 @@ class Programm
                             artiklListe.Add((artikel1, preis));
                         }
 
-                        string fullStr = $"Artikel: {artikel1} // Nettopreis: {preisStr1}";
-                       Console.WriteLine(fullStr);
+                        string fullStr = $"Artikel: {artikel1} // Nettopreis: {preisStr1} €";
+                       Console.WriteLine($"\n {fullStr}");
                        
 
                     }
@@ -160,8 +164,10 @@ class Programm
         var teuersterArtikel = artiklListe.First(a => a.Preis == maxPreis);
         var billigsterArtikel = artiklListe.First(a => a.Preis == minPreis);
 
-        Console.WriteLine($"\nBilligster Artikel: {billigsterArtikel.Artikel}, Preis: {billigsterArtikel.Preis} €");
-        Console.WriteLine($"Teuerster Artikel: {teuersterArtikel.Artikel}, Preis: {teuersterArtikel.Preis} €");
+        
+
+        Console.WriteLine($"\nBilligster Artikel: {billigsterArtikel.Artikel}, Preis: {billigsterArtikel.Preis} €;");
+        Console.WriteLine($"Teuerster Artikel: {teuersterArtikel.Artikel}, Preis: {teuersterArtikel.Preis} €;");
 
 
         Console.ReadKey();
