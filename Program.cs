@@ -2,10 +2,10 @@
 
 
 using System;
-using System.Collections.Immutable;
+
 using System.Data;
 using System.Globalization;
-using System.IO;
+
 using System.Text;
 using ExcelDataReader;
 
@@ -14,10 +14,12 @@ class Programm
 {
     static void Main()
     {
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+        //nameSpaces System.Text
+       Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         Console.OutputEncoding = Encoding.UTF8;
-        Console.Out.WriteLine("€");
+     
 
         string excelFilePath = "C:/Users/A.Graur/Documents/BKU/SWD/Bestellungen.xlsx";
         string csvFilePath = "C:/Users/A.Graur/Documents/BKU/SWD/BestellungenCSV.csv"; 
@@ -52,7 +54,7 @@ class Programm
                     }
                 }
                 //Datei auf dem Bildschirm ausgeben
-                Console.WriteLine("    Inhalt der Excel-Datei  ");
+                Console.WriteLine("    Inhalt der Excel-Datei in CSV umgewandelt  ");
                 foreach (DataRow  row in table.Rows)
                 {
                     for (int i=0; i< table.Columns.Count; i++)
@@ -60,7 +62,7 @@ class Programm
                         Console.Write(row[i].ToString() +  ";  ");
                     }
                     Console.WriteLine("\n");
-                } Console.WriteLine("****************In CSV umgewandelt******************");
+                } 
 
                 
             }
@@ -69,17 +71,17 @@ class Programm
        GetArtikel();
         FindenTeuersterBilligsterArtikel();
     }
-
+     
     static void GetArtikel()
     {
-        Console.WriteLine("//******************Artikel + Nettopreis*********//");
+        Console.WriteLine("\n //             Artikel + Nettopreis             //");
 
 
         string filePath = @"C:\Users\A.Graur\Documents\BKU\SWD\Bestellungen.xlsx";
 
         List<string> list = new List<string>();
 
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+      Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
         {
             using (IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream))
@@ -95,7 +97,7 @@ class Programm
                         string artikel = reader.GetValue(8)?.ToString() ?? "Falls";
                         string nettopreis = reader.GetValue(9)?.ToString() ?? "";
 
-                        string fullSTR = $"Artikel: {artikel} -- Nettotpreis: {nettopreis} €";
+                        string fullSTR = $"Artikel: {artikel} _____ Nettotpreis: {nettopreis} €";
                         list.Add(fullSTR);
                     }
 
@@ -108,11 +110,7 @@ class Programm
             Console.WriteLine(item);
         }
 
-        List<string> nameList = new List<string>();
-        using (FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
-        {
-
-        }
+      
 
 
            
@@ -122,13 +120,13 @@ class Programm
     {
         Console.WriteLine(" \n");
 
-        Console.WriteLine("\n //******************Conwertierte Liste Teuerste Artikel + Billigste Artikel + Preis*********//");
+        Console.WriteLine("\n //          Conwertierte Liste + Teuerste Artikel + Billigste Artikel + Preis       //");
         Console.WriteLine("                                                                ");
         string filePath = @"C:\Users\A.Graur\Documents\BKU\SWD\Bestellungen.xlsx";
 
 
         List < (string Artikel, double Preis) > artiklListe = new List<(string, double)>();
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         using(FileStream stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
         {
@@ -164,10 +162,10 @@ class Programm
         var teuersterArtikel = artiklListe.First(a => a.Preis == maxPreis);
         var billigsterArtikel = artiklListe.First(a => a.Preis == minPreis);
 
-        
+        Console.WriteLine(" \n");
 
         Console.WriteLine($"\nBilligster Artikel: {billigsterArtikel.Artikel}, Preis: {billigsterArtikel.Preis} €;");
-        Console.WriteLine($"Teuerster Artikel: {teuersterArtikel.Artikel}, Preis: {teuersterArtikel.Preis} €;");
+        Console.WriteLine($" \n Teuerster Artikel: {teuersterArtikel.Artikel}, Preis: {teuersterArtikel.Preis} €;");
 
 
         Console.ReadKey();
